@@ -518,6 +518,7 @@ dependencies = [
  "env_logger",
  "image",
  "indexmap",
+ "libsqlite3-sys",
  "log",
  "pango",
  "pangocairo",

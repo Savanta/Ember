@@ -24,6 +24,7 @@ toml = "0.8"
 # Deviation from arch (rusqlite): rusqlite not cached locally; sqlx async is
 # architecturally cleaner with tokio and eliminates spawn_blocking wrappers.
 sqlx = { version = "0.8", features = ["sqlite", "runtime-tokio"] }
+libsqlite3-sys = { version = "0.30", features = ["bundled"] }
 
 # Logging — tracing for instrumentation, env_logger as the backend
 # Deviation from arch (tracing-subscriber): not cached; env_logger available.
