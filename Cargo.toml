@@ -20,10 +20,9 @@ serde = { version = "1", features = ["derive"] }
 serde_json = "1"
 toml = "0.8"
 
-# Persistent storage — sqlx with bundled SQLite (no system libsqlite3 required)
-# Deviation from arch (rusqlite): rusqlite not cached locally; sqlx async is
-# architecturally cleaner with tokio and eliminates spawn_blocking wrappers.
-sqlx = { version = "0.8", features = ["sqlite", "runtime-tokio"] }
+# Persistent storage — sqlx with SQLite. default-features disabled to exclude
+# the sqlx-macros proc-macro crate (compile-time query! macros not used).
+sqlx = { version = "0.8", default-features = false, features = ["sqlite", "runtime-tokio"] }
 
 # Logging — tracing for instrumentation, env_logger as the backend
 # Deviation from arch (tracing-subscriber): not cached; env_logger available.
