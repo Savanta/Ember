@@ -14,6 +14,13 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Install system dependencies
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y --no-install-recommends \
+            libcairo2-dev libpango1.0-dev libglib2.0-dev \
+            libdbus-1-dev pkg-config
+
       - name: Install Rust toolchain
         uses: dtolnay/rust-toolchain@stable
 
@@ -33,6 +40,13 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Install system dependencies
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y --no-install-recommends \
+            libcairo2-dev libpango1.0-dev libglib2.0-dev \
+            libdbus-1-dev pkg-config dbus xvfb
+
       - name: Install Rust toolchain
         uses: dtolnay/rust-toolchain@stable
 
@@ -49,8 +63,9 @@ jobs:
           mkdir -p "$XDG_RUNTIME_DIR"
           rm -f "$XDG_RUNTIME_DIR/ember.sock"
 
-          dbus-run-session -- bash -lc '
+          dbus-run-session -- xvfb-run --auto-servernum bash -c '
             set -euo pipefail
+            export XDG_RUNTIME_DIR="'"$XDG_RUNTIME_DIR"'"
             target/debug/ember > /tmp/ember.log 2>&1 &
             EMBER_PID=$!
 
