@@ -1,0 +1,53 @@
+[package]
+name = "ember"
+version = "0.1.0"
+edition = "2024"
+description = "Notification daemon for i3/X11"
+
+[[bin]]
+name = "ember"
+path = "src/main.rs"
+
+[dependencies]
+# D-Bus (Freedesktop Notifications interface)
+zbus = { version = "5", features = ["tokio"] }
+
+# Async runtime
+tokio = { version = "1", features = ["full"] }
+
+# Serialization
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+toml = "0.8"
+
+# Persistent storage — sqlx with bundled SQLite (no system libsqlite3 required)
+# Deviation from arch (rusqlite): rusqlite not cached locally; sqlx async is
+# architecturally cleaner with tokio and eliminates spawn_blocking wrappers.
+sqlx = { version = "0.8", features = ["sqlite", "runtime-tokio"] }
+
+# Logging — tracing for instrumentation, env_logger as the backend
+# Deviation from arch (tracing-subscriber): not cached; env_logger available.
+tracing = { version = "0.1", features = ["log"] }
+log = "0.4"
+env_logger = "0.11"
+
+# Path utilities
+dirs = "5"
+
+# X11 window management for toast renderer (pure-Rust XCB impl, no system xcb)
+x11rb = { version = "0.11", features = ["allow-unsafe-code", "render", "shape"] }
+
+# 2D rendering for toast windows (requires system libcairo + pangocairo)
+cairo-rs = "0.22"
+pangocairo = "0.22"
+pango = "0.22"
+
+# Icon resolution and rasterization
+image = { version = "0.25", default-features = false, features = ["png", "jpeg"] }
+
+# Error handling
+thiserror = "1"
+anyhow = "1"
+
+# Ordered insertion map for notification list
+indexmap = "2"
