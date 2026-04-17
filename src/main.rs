@@ -1,4 +1,3 @@
-mod adapters;
 mod config;
 mod core;
 mod ctl;
