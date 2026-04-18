@@ -258,7 +258,7 @@ mod tests {
         let (toast_tx, _toast_rx) = tokio::sync::mpsc::channel::<crate::toast::ToastCommand>(8);
         let (dbus_tx,  _dbus_rx)  = tokio::sync::mpsc::channel::<DbusSignal>(8);
 
-        let engine = Arc::new(Engine::new(Arc::new(cfg), sqlite, toast_tx, dbus_tx));
+        let engine = Arc::new(Engine::new(Arc::new(cfg), sqlite, toast_tx, dbus_tx, None));
 
         let eng_clone = Arc::clone(&engine);
         let path_clone = sock_path.clone();

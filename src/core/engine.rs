@@ -607,7 +607,7 @@ mod tests {
         let cfg = Arc::new(cfg);
         let (toast_tx, toast_rx) = mpsc::channel(64);
         let (dbus_tx, dbus_rx) = mpsc::channel(64);
-        let engine = Engine::new(cfg, sqlite, toast_tx, dbus_tx);
+        let engine = Engine::new(cfg, sqlite, toast_tx, dbus_tx, None);
         (engine, toast_rx, dbus_rx)
     }
 
