@@ -15,6 +15,8 @@ pub struct Config {
     #[serde(default)]
     pub toast: ToastConfig,
     #[serde(default)]
+    pub sound: SoundConfig,
+    #[serde(default)]
     pub shortcuts: ShortcutConfig,
     /// Per-application overrides: `[[app]]` array in TOML.
     #[serde(default, rename = "app")]
@@ -52,6 +54,26 @@ pub struct DndConfig {
 pub struct DndSchedule {
     pub from: u8,
     pub to:   u8,
+}
+
+/// Sound settings — controls libcanberra playback.
+#[derive(Debug, Clone, Deserialize)]
+#[serde(default)]
+pub struct SoundConfig {
+    /// Enable/disable sound globally.
+    pub enabled: bool,
+    /// Freedesktop sound-theme event ID to play when no per-notification
+    /// `sound-name` hint is present (e.g. "message-new-instant").
+    pub default_sound: String,
+}
+
+impl Default for SoundConfig {
+    fn default() -> Self {
+        Self {
+            enabled:       true,
+            default_sound: "message-new-instant".into(),
+        }
+    }
 }
 
 /// Per-application notification rules (`[[app]]` in config.toml).

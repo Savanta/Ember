@@ -3,6 +3,7 @@ use std::sync::{Arc, RwLock};
 use tokio::sync::{broadcast, mpsc, Mutex};
 
 use crate::config::Config;
+use crate::sound::SoundPlayer;
 use crate::store::memory::MemoryStore;
 use crate::store::models::{CloseReason, Notification, NotificationAction, Urgency};
 use crate::store::sqlite::SqliteStore;
@@ -64,6 +65,7 @@ pub struct Engine {
     /// Hot-swappable config (per-app rules, timeouts, DND schedule).
     config:   Arc<RwLock<Arc<crate::config::Config>>>,
     event_tx: broadcast::Sender<()>,
+    sound:    Option<Arc<SoundPlayer>>,
 }
 
 impl Engine {
@@ -72,6 +74,7 @@ impl Engine {
         sqlite:   SqliteStore,
         toast_tx: mpsc::Sender<ToastCommand>,
         dbus_tx:  mpsc::Sender<DbusSignal>,
+        sound:    Option<Arc<SoundPlayer>>,
     ) -> Self {
         let state = EngineState {
             next_id:      1,
@@ -88,6 +91,7 @@ impl Engine {
             dbus_tx,
             config: Arc::new(RwLock::new(config)),
             event_tx,
+            sound,
         }
     }
 
@@ -244,6 +248,26 @@ impl Engine {
         }
 
         if !muted {
+            // Play notification sound via libcanberra.
+            // Respects D-Bus hints: `sound-name`, `sound-file`, `suppress-sound`.
+            if let Some(ref player) = self.sound {
+                let suppress = notif.hints.get("suppress-sound")
+                    .map(|v| v == "1" || v.eq_ignore_ascii_case("true"))
+                    .unwrap_or(false);
+                if !suppress && cfg_snap.sound.enabled {
+                    let player       = Arc::clone(player);
+                    let sound_name   = notif.hints.get("sound-name").cloned();
+                    let sound_file   = notif.hints.get("sound-file").cloned();
+                    let default_snd  = cfg_snap.sound.default_sound.clone();
+                    tokio::task::spawn_blocking(move || {
+                        player.play(
+                            sound_name.as_deref(),
+                            sound_file.as_deref(),
+                            &default_snd,
+                        );
+                    });
+                }
+            }
             let _ = self.toast_tx.send(ToastCommand::Show { notif: Box::new(notif), timeout_ms, group_count }).await;
         }
         let _ = self.toast_tx.send(ToastCommand::SetFocus(focus_id)).await;

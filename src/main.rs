@@ -4,6 +4,7 @@ mod ctl;
 mod dbus;
 mod input;
 mod ipc;
+mod sound;
 mod store;
 mod toast;
 mod ui_contract;
@@ -15,6 +16,7 @@ use tokio::sync::mpsc;
 use crate::config::Config;
 use crate::core::engine::{DbusSignal, Engine};
 use crate::dbus::server::NotificationsServer;
+use crate::sound::SoundPlayer;
 use crate::store::sqlite::SqliteStore;
 use crate::toast::{ToastCommand, ToastEvent};
 
@@ -203,11 +205,17 @@ async fn run_daemon(
     let (dbus_signal_tx, dbus_signal_rx) = mpsc::channel::<DbusSignal>(64);
 
     // ── Engine ─────────────────────────────────────────────────────────────────
+    let sound = if cfg.sound.enabled {
+        SoundPlayer::new().map(std::sync::Arc::new)
+    } else {
+        None
+    };
     let engine = Arc::new(Engine::new(
         Arc::clone(&cfg),
         sqlite,
         toast_tx,
         dbus_signal_tx,
+        sound,
     ));
 
     // ── Toast renderer (blocking X11 thread) ──────────────────────────────────

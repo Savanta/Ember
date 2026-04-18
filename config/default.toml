@@ -6,6 +6,12 @@ max_history = 500
 [dnd]
 enabled = false
 
+[sound]
+enabled       = true
+default_sound = "message-new-instant"  # freedesktop sound-theme event ID
+# To use a custom file instead:
+# default_sound = ""  (ignored when sound-file hint is set per-notification)
+
 [toast]
 position     = "top-right"  # top-right | top-left | bottom-right | bottom-left
 animation    = "slide-right" # slide-right | slide-left | slide-down | slide-up | fade | fade-slide
