@@ -31,7 +31,7 @@ unsafe extern "C" {
     fn ca_context_create(c: *mut *mut CaContext) -> i32;
     fn ca_context_open(c: *mut CaContext) -> i32;
     fn ca_context_destroy(c: *mut CaContext) -> i32;
-    fn ca_context_change_proplist(c: *mut CaContext, p: *mut CaProplist) -> i32;
+    fn ca_context_change_props_full(c: *mut CaContext, p: *mut CaProplist) -> i32;
 
     fn ca_proplist_create(p: *mut *mut CaProplist) -> i32;
     fn ca_proplist_sets(
@@ -85,7 +85,7 @@ impl SoundPlayer {
             if ca_proplist_create(&mut pl) == 0 && !pl.is_null() {
                 set_prop(pl, "application.name",  "ember");
                 set_prop(pl, "application.id",    "org.ember.notify");
-                ca_context_change_proplist(ctx, pl);
+                ca_context_change_props_full(ctx, pl);
                 ca_proplist_destroy(pl);
             }
 
