@@ -20,7 +20,7 @@ max_visible  = 5
 gap          = 10
 margin_x     = 18
 margin_y     = 50
-timeout_normal   = 5000     # ms, 0 = never expire
+timeout_normal   = 15000    # ms, 0 = never expire
 timeout_critical = 0
 timeout_low      = 3000
 

@@ -1121,7 +1121,14 @@ fn paint_toast(
             let progress = (remaining / total_secs).clamp(0.0, 1.0);
 
             let bar_h = (3.0_f64 * scale).max(2.0);
-            let bar_y = hf - bar_h;
+            // Keep the timeout bar above the stroke so thick/focused borders
+            // never cover it visually.
+            let border_w = if tw.focused {
+                theme.border_width + (2.0 * scale).max(1.0)
+            } else {
+                theme.border_width
+            };
+            let bar_y = (hf - bar_h - border_w - 1.0).max(0.0);
             let bar_w = wf - pad * 2.0;
 
             // Track
