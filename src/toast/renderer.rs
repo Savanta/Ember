@@ -1128,7 +1128,9 @@ fn paint_toast(
             } else {
                 theme.border_width
             };
-            let bar_y = (hf - bar_h - border_w - 1.0).max(0.0);
+            // Explicit breathing room between border and bar.
+            let bar_gap = (2.0 * scale).max(1.0);
+            let bar_y = (hf - bar_h - border_w - bar_gap - 1.0).max(0.0);
             let bar_w = wf - pad * 2.0;
 
             // Track
