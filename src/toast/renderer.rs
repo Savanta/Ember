@@ -1108,7 +1108,7 @@ fn paint_toast(
         }
         // ── Progress bar ───────────────────────────────────────────────────────
         // Shown only when the notification has a finite timeout.
-        // Drawn as a 3 px strip at the very bottom of the toast.
+        // Drawn as a thin strip above the bottom edge of the toast.
         if let Some(expires_at) = tw.expires_at {
             let total_secs = expires_at
                 .checked_duration_since(tw.created_at)
@@ -1129,7 +1129,7 @@ fn paint_toast(
                 theme.border_width
             };
             // Explicit breathing room between border and bar.
-            let bar_gap = (2.0 * scale).max(1.0);
+            let bar_gap = (4.0 * scale).max(3.0);
             let bar_y = (hf - bar_h - border_w - bar_gap - 1.0).max(0.0);
             let bar_w = wf - pad * 2.0;
 
