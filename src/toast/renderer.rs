@@ -1121,6 +1121,7 @@ fn paint_toast(
             let progress = (remaining / total_secs).clamp(0.0, 1.0);
 
             let bar_h = (3.0_f64 * scale).max(2.0);
+            let has_action_row = !tw.notif.actions.is_empty() || tw.notif.can_reply;
             // Keep the timeout bar above the stroke so thick/focused borders
             // never cover it visually.
             let border_w = if tw.focused {
@@ -1130,7 +1131,13 @@ fn paint_toast(
             };
             // Explicit breathing room between border and bar.
             let bar_gap = (4.0 * scale).max(3.0);
-            let bar_y = (hf - bar_h - border_w - bar_gap - 1.0).max(0.0);
+            let bar_y = if has_action_row {
+                // Keep the bar above the button row so it never overlaps buttons.
+                let btn_row_top = hf - BTN_ROW_H * scale;
+                (btn_row_top - bar_h - bar_gap).max(0.0)
+            } else {
+                (hf - bar_h - border_w - bar_gap - 1.0).max(0.0)
+            };
             let bar_w = wf - pad * 2.0;
 
             // Track
