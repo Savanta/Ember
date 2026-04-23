@@ -28,3 +28,9 @@ full_output.txt
 result
 dist/
 
+
+# Packaging workspace artifacts
+pkg/src/
+pkg/*.pkg.tar*
+pkg/*.tar.gz
+pkg/*.tar.zst
